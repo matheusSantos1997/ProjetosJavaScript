@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='UTF-8'>
+    <title>XMLHttpRequest #01</title>
+    <link rel='stylesheet' href='css/estilo.css'>
+</head>
+
+<body class="conteudo exercicio">
+    <h1>Estados</h1>
+
+    <script>
+        //funçao com objeto de configuraçoes com nome "config" onde vai receber todos os parametros
+        function ajax(config) 
+        {
+            const xhr = new XMLHttpRequest() //instanciou o xmlhttprequest
+            
+            //vai fazer uma requisiçao do tipo get recebendo um parametro chamado "url" em qual url vai executar dentro do objeto "config" de forma sincrona
+            xhr.open(config.metodo, config.url, true) 
+
+            //funççao evento onload recebendo o e = evento
+            xhr.onload = e => {
+                if (xhr.status == 200)
+                {
+                    config.sucesso(xhr.response) //cria uma funçao chamada "sucesso" passada dentro do "config" com uma resposta
+                }
+                else if(xhr.status >= 400)
+                {
+                    //gera uma funçao de erro
+                    config.erro({
+                        codigo: xhr.status,
+                        texto: xhr.statusText
+                    })
+                }
+            }
+            xhr.send() //vai enviar a requisiçao
+        }
+
+        function criarTabela(estados)
+        {
+             //vai chamar array estados.json em cada estado
+             const linhas = estados.map(estado => {
+                    //pegando o array de estados em uma linha da tabela
+                     const tdId = document.createElement('td')
+                     tdId.innerHTML = estado.id //vai escrever na tela
+
+                     const tdNome = document.createElement('td')
+                     tdNome.innerHTML = estado.nome //vai escrever na tela
+
+                     const tdSigla = document.createElement('td')
+                     tdSigla.innerHTML = estado.sigla //vai escrever na tela
+
+                     
+                     //vai criar a linha com as tres colunas
+                     const tr = document.createElement('tr')
+                     tr.appendChild(tdId)
+                     tr.appendChild(tdNome)
+                     tr.appendChild(tdSigla)
+
+                     return tr //vai retornar a tabela
+                 })
+                 
+                 //vai adicionar cada uma das linhas dentro da tabela
+                 const tabela = document.createElement('table')
+                 linhas.forEach(linha => tabela.appendChild(linha))
+                 document.body.appendChild(tabela) // vai adicionar a tabela no body = corpo da página
+        }
+        
+        //chamando a funçao ajax com os parametros dentro do objeto config
+        ajax({
+            url: "dados/estados.json",
+            metodo: "get",
+            sucesso(resposta) {
+                
+                //tratando a resposta
+                const estados = JSON.parse(resposta)
+                criarTabela(estados)
+                 
+               
+            },
+            //caso der erro vai adicionar a funçao de erro
+            erro(erro) {
+                const msg = document.createTextNode(`${erro.codigo}: ${erro.texto}`)
+                document.body.appendChild(msg)// vai adicionar a mensagem de erro no body = corpo da página
+            } 
+        })
+    </script>
+</body>

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='UTF-8'>
+    <title>Trabalhando com Eventos #01</title>
+    <link rel='stylesheet' href='css/estilo.css'>
+</head>
+
+<body class="conteudo exercicio">
+    <div>
+        <!-- onclick="navegarEm5s(event)" -->
+        <a href="https://google.com.br">Google</a>
+    </div>
+    <script>
+         function navegarEm5s(e)
+         {
+             e.preventDefault() //evita de acontecer o comportamento padrao 
+             console.log('Saindo em 5s...')
+             setTimeout(() => {
+                const link = e.target
+                window.location.href = link.href
+             }, 5000) //vai carregar a pagina em 5 segundos
+         }
+         
+         //usando onclick no js direto
+         const clicando = document.querySelector('a') //selecionando a tag a e guardando em uma constante
+         clicando.onclick = navegarEm5s
+    </script>
+</body>

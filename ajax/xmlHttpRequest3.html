@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='UTF-8'>
+    <title>XMLHttpRequest #03</title>
+    <link rel='stylesheet' href='css/estilo.css'>
+</head>
+
+<body class="conteudo exercicio">
+    <h1>Estados</h1>
+
+    <script>
+        function ajax(config)
+        {
+             const xhr = new XMLHttpRequest()
+             xhr.open(config.metodo, config.url, true)
+              
+             //quando a requisiçao estiver concluida
+             xhr.onreadystatechange = e => {
+                 if(xhr.readyState === 4)
+                 {
+                     if (xhr.status === 200)
+                     {
+                         config.sucesso(xhr.responseXML) //responseXML para leitura de arquivos XML response para leitura de arquivos JSON
+                     }
+                     else if (xhr.status >= 400)
+                     {
+                        
+                             config.erro({
+                                  codigo: xhr.status,
+                                  texto: xhr.statusText
+                             })
+                         }
+                  }  
+                        
+            }
+             xhr.send()
+        }
+        ajax({
+            url: "dados/estados.xml",
+            metodo: "get",
+            sucesso(resposta) {
+                const estados = resposta.getElementsByTagName('estado')
+                const itens = Array.from(estados).reduce(
+                    (html, estado) => html + `<li>${estado.attributes.nome.value}</li>`, ''  
+                );
+
+                 document.body.insertAdjacentHTML('beforeend', `<ul>${itens}</ul>`)
+            },
+            erro(error){
+                const msg = document.createTextNode(`${error.codigo}:${error.texto}`)
+                document.body.appendChild(msg)
+            }
+        })   
+    </script>
+</body>
